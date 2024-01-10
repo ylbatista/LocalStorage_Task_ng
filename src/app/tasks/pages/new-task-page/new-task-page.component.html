@@ -1,0 +1,133 @@
+<div class="p-6">
+    <br>
+
+    <div class="flex flex-end">
+        <span class="text-lg"> 
+            <!-- {{ taskForm.value.id ? 'Editar Tarea' : 'Agregar Tarea' }} -->
+            <small *ngIf="taskForm.value.id">Crear / Editar Tarea " {{ taskForm.value.taskName | titlecase }} " </small>
+        </span>
+          
+          
+
+        <span class="spacer"></span>
+
+        <button class="mr-3" mat-flat-button color="primary" routerLink="/task-list">
+            <mat-icon>list</mat-icon>
+            Regresar a lista
+        </button>
+    </div>
+    <br>
+    <mat-divider></mat-divider>
+    <br>
+
+    <div class="col-12 md:col-6 md:col-offset-3 md:mr-8 mb-6">
+        <mat-card class="p-2">
+            <br>
+            
+            <form [formGroup]="taskForm" class="flex flex-column">
+                <!-- nombre tarea -->
+                <mat-form-field>
+                    <mat-label> Nombre Tarea </mat-label>
+                    <input
+                        matInput
+                        type="text"
+                        placeholder="Ej: Crear CRUD Productos"
+                        formControlName="taskName"
+                    >
+                    <mat-icon matSuffix>mode_edit</mat-icon>
+                </mat-form-field>
+    
+                <!-- fecha creacion -->
+                <mat-form-field>
+                    <mat-label> Fecha creación </mat-label>
+                    <input
+                        matInput
+                        type="date"
+                        formControlName="createAt"
+                        >
+                        <mat-icon matSuffix>mode_edit</mat-icon>
+                </mat-form-field>
+    
+                <!-- fecha Límite -->
+                <mat-form-field class="example-form-field">
+    
+                    <mat-label>Fecha Límite</mat-label>
+                    <input matInput [matDatepicker]="datepicker"
+                    formControlName="limitDate">
+    
+                    <mat-hint>DD/MM/YYYY</mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
+                    
+                    <mat-datepicker #datepicker>
+                        <mat-datepicker-actions>
+                            <button mat-button matDatepickerCancel>Cancelar</button>
+                            <button mat-raised-button color="primary" matDatepickerApply>Aplicar</button>
+                        </mat-datepicker-actions>
+                    </mat-datepicker>
+    
+                </mat-form-field>
+    
+                <!-- Estado -->
+                <mat-form-field>
+                    <mat-label>Estado</mat-label>
+                    <mat-select formControlName="status">
+                      <mat-option value="creado"> Creado </mat-option>
+                      <mat-option value="progreso"> En Progreso </mat-option>
+                      <mat-option value="finalizado"> Finalizado </mat-option>
+                      <mat-option value="incompleto"> Incompleto </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                
+                <!-- Creado por  email-->
+                <mat-form-field class="example-full-width">
+                    <mat-label>Creada por</mat-label>
+                    <input type="text"
+                           placeholder="Seleccione un usuario"
+                           matInput
+                           formControlName="createdBy"
+                           [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete">
+                      @for (user of users; track user) {
+                        <mat-option [value]="user">{{ user }}</mat-option>
+                      }
+                    </mat-autocomplete>
+                </mat-form-field>
+    
+                <!-- descripcion -->
+                <mat-form-field>
+                    <mat-label>Descripción</mat-label>
+                    <textarea
+                        matInput
+                        formControlName="description"
+                    ></textarea>
+                </mat-form-field>
+    
+            </form>
+    
+            <div class="flex flex-end">
+                      
+                <!-- (click)="deleteProduct( product.id, product.nombre )" -->
+                <!-- <button  mat-flat-button color="warn"
+                *ngIf="taskForm.value.id"
+                >
+                  <mat-icon>delete</mat-icon>
+                    Borrar
+                </button> -->
+                <span class="spacer"></span>
+                <button
+                    mat-flat-button
+                    color="primary"
+                    (click)="addTask()"
+                    
+                  ><mat-icon>save</mat-icon> Guardar
+                  
+                </button>
+            </div>
+    
+        </mat-card>
+    </div>
+
+</div>
+
+
+

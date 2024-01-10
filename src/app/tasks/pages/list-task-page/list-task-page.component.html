@@ -1,0 +1,192 @@
+
+<div class="p-6">
+
+  <br>
+
+  <div class="flex flex-end">
+    <span class="text-lg"> Listado de tareas de " {{name_UserNameLogged | titlecase}} "</span>
+    <span class="spacer"></span>
+        
+    <button class="mr-3" mat-flat-button color="warn" routerLink="/create-task">
+      <mat-icon>add_task</mat-icon>
+      Crear Nueva Tarea
+    </button>
+  </div>
+  <br>
+  <mat-divider></mat-divider>
+
+  <div class="flex">
+    <div class="col-2 pt-6">
+      
+      <mat-card>
+
+        <span class="text-lg mt-4 ml-3"> Aplicar Filtros</span>
+        <br>
+        <mat-divider></mat-divider>
+        <br>
+
+        <mat-form-field>
+          <mat-label> <mat-icon style="font-size:25px;">search</mat-icon>Buscar ...</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Ej. Nombre, descripción" #input>
+        </mat-form-field>
+        <!-- <mat-divider></mat-divider> -->
+
+        <!-- filtrar por estado -->
+        <mat-form-field>
+          <mat-label>Seleccione el Estado</mat-label>
+          <mat-select
+          [(ngModel)]="selectedStatus"
+          (selectionChange)="applyFilters()"
+          name="taskStatus">
+            @for (status of taskStatus; track status) {
+              <mat-option [value]="status">{{status | titlecase}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <!-- {{ selectedStatus }} -->
+
+        <!-- filtrar por nombre de tarea -->
+        <mat-form-field>
+          <mat-label>Seleccione el Nombre</mat-label>
+          <mat-select
+            [(ngModel)]="selectedTaskName"
+            (selectionChange)="applyTaskNameFilter()"
+            name="taskName">
+            <mat-option *ngFor="let task of userTasks; let i = index" [value]="task.taskName">
+              {{ task.taskName | titlecase }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!-- {{ selectedTaskName }} -->
+
+        <button
+          mat-button color="primary"
+          (click)="showOldestInProgressTask()"
+          matTooltip=" Mostrar la tarea que ha estado más tiempo En Progreso">
+          Tarea de mayor duración
+        </button>
+        
+        
+        <button
+          mat-button color="primary"
+          (click)="showExpiredTasks()"
+          matTooltip="Mostrar tareas que vencieron la fecha límite de realización">
+          Tareas vencidas 
+        </button>
+      
+      </mat-card>
+
+    </div>
+
+    <div style="width: 78%;" class="col-10 m-5">
+      <!-- Tabla  class="mat-elevation-z8"-->
+      <mat-card>
+
+        <div class="mat-elevation-z8">
+          <table mat-table [dataSource]="dataSource" matSort>
+        
+            <!-- Nombre Tarea column -->
+            <ng-container matColumnDef="taskName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre Tarea </th>
+              <td mat-cell *matCellDef="let task"> {{task.taskName | titlecase}} </td>
+            </ng-container>
+        
+            <!-- descripcion Column -->
+            <ng-container matColumnDef="description">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Descripción </th>
+              <td mat-cell *matCellDef="let task"
+                matTooltip="{{task.description | titlecase}}">
+                {{ task.description | titlecase | slice:0:10 }} ...
+              </td>
+            </ng-container>
+        
+            <!-- creada Column -->
+            <ng-container matColumnDef="createAt">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Creada </th>
+              <td mat-cell *matCellDef="let task"> {{task.createAt | date:'dd/MM/yyyy'}} </td>
+            </ng-container>
+  
+            <!-- Fecha limite Column -->
+            <ng-container matColumnDef="limitDate">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha Limite </th>
+              <td mat-cell *matCellDef="let task"> {{task.limitDate | date:'dd/MM/yyyy'}} </td>
+            </ng-container>
+  
+            <!-- Acciones Column -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Acciones </th>
+              
+              <td mat-cell *matCellDef="let task">
+                
+                <button 
+                  mat-icon-button matTooltip="Editar Tarea"
+                  [routerLink]="['/edit', task.id]"
+                  >
+                    <mat-icon>edit</mat-icon>
+                </button>
+  
+                <button
+                  color="warn"
+                  mat-icon-button matTooltip="Eliminar Tarea"
+                  [disabled]="task.status !== 'creado'"
+                  (click)="deleteTask(task)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+
+                <!-- <button
+                  mat-icon-button matTooltip="Eliminar Completamente"
+                  (click)="deleteTask(task)">
+                    <mat-icon>delete</mat-icon>
+                </button> -->
+
+              </td>
+            </ng-container>
+
+            <!-- Estado -->
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado </th>
+              <!-- <td mat-cell *matCellDef="let task"> {{task.status}} </td> -->
+              <td mat-cell *matCellDef="let task"> 
+                  <!-- <mat-option> Creada</mat-option> -->
+                  
+                  <mat-chip-set
+                    cdkDropList
+                    cdkDropListOrientation="horizontal">
+                    <button 
+                      mat-icon-button matTooltip="Actualizar Estado"
+                      (click)="updateStatus(task.id)">
+                        <mat-icon>update</mat-icon>
+                    </button>
+  
+                    <mat-chip-listbox >
+                      <mat-chip *ngIf="task.status === 'creado'" style="background-color: #ffc60a;" selected>Creado</mat-chip>
+                      <mat-chip *ngIf="task.status === 'progreso'" style="background-color: rgba(33, 104, 255, 0.884);" selected>Progreso</mat-chip>
+                      <mat-chip *ngIf="task.status === 'finalizado'"  style="background-color: rgba(2, 173, 31, 0.884);">Finalizado</mat-chip>
+                      <mat-chip *ngIf="task.status === 'incompleto'" style="background-color: #ff4d35;">Incompleto</mat-chip>
+                    </mat-chip-listbox>
+                    
+                  </mat-chip-set>
+  
+              </td> 
+            </ng-container>
+        
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let task; columns: displayedColumns;"></tr>
+        
+            <!-- Row shown when there is no matching data. -->
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" colspan="4">No se encuentra nada  el valor: "{{input.value}}"</td>
+            </tr>
+          </table>
+        
+          <mat-paginator [pageSizeOptions]="[2, 25, 100]" aria-label="Select page of users"></mat-paginator>
+        </div>
+      </mat-card>
+    </div>
+
+  </div>
+</div>
+
+
+

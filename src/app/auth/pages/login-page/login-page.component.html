@@ -1,0 +1,67 @@
+
+<div class="p-6">
+
+    <!-- {{isLoggedSignal()}} -->
+
+    <span class="spacer"></span>
+
+    <div class="grid pt-8">
+        <div class="col-12 md:col-6 md:col-offset-3 md:mr-8 pt-8 pb-8">
+            
+            <h1 class="mb-4"> Login </h1>
+            
+            <mat-card class="p-2">
+                
+                <br>
+
+                <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="flex flex-column">
+                    <!-- usuario -->
+                    <mat-form-field>
+                        <mat-label>Correo electrónico </mat-label>
+                        <input
+                        matInput
+                        type="email"
+                        placeholder="Ej: yuri@gmail.com"
+                        formControlName="email">
+                    </mat-form-field>
+    
+                    <!-- contraseña -->
+                    <mat-form-field>
+                        <mat-label> Contraseña </mat-label>
+                        <input
+                        matInput [type] = "hide ? 'password' : 'text'"
+                        name="password"
+                        formControlName="password">
+    
+                        <button mat-icon-button matSuffix
+                            (click)="hide = !hide" 
+                            [attr.aria-label]="'Hide password'"
+                            [attr.aria-pressed]="hide">
+    
+                            <mat-icon> {{ hide ? 'visibility_off' : 'visibility' }} </mat-icon>
+                        </button>
+                    </mat-form-field>
+    
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        type="submit"
+                        >
+                        <mat-icon>save</mat-icon>
+                        Ingresar
+                    </button>
+    
+                    <div class="flex justify-content-end mt-3">
+                        <a routerLink="/register"> No tienes cuenta?</a>
+                    </div>
+                </form>
+    
+            </mat-card>
+    
+        </div>
+    </div>
+
+
+</div>
+
+

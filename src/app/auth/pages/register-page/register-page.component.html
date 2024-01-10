@@ -1,0 +1,91 @@
+
+<div class="p-6">
+    <!-- <pre>
+        password: {{registerForm.value.password}}
+        confirmPassword: {{registerForm.value.confirmPassword}}
+    </pre> -->
+
+    <span class="spacer"></span>
+
+    <div class="grid pt-8">
+
+        <div class="col-12 md:col-6 md:col-offset-3 md:mr-8">
+       
+    
+            <mat-card class="p-2">
+                <br>
+                <span class="text-lg mb-4"> Registrar usuario </span>
+        
+                <form [formGroup]="registerForm" (ngSubmit)="addUser()" class="flex flex-column">
+                    <!-- usuario -->
+                    <mat-form-field>
+                        <mat-label> Usuario </mat-label>
+                        <input
+                        matInput
+                        type="text"
+                        placeholder="Ej: yuri"
+                        formControlName="name">
+                    </mat-form-field>
+            
+                    <!-- contraseña -->
+                    <mat-form-field>
+                        <mat-label> Contraseña </mat-label>
+                        <input
+                        matInput [type] = "hide ? 'password' : 'text'"
+                        name="password"
+                        formControlName="password">
+                        <button mat-icon-button matSuffix
+                            (click)="hide = !hide" 
+                            [attr.aria-label]="'Hide password'"
+                            [attr.aria-pressed]="hide">
+                            <mat-icon> {{ hide ? 'visibility_off' : 'visibility' }} </mat-icon>
+                        </button>
+                    </mat-form-field>
+            
+                    <!-- confirm contraseña -->
+                    <mat-form-field>
+                        <mat-label> Repetir contraseña </mat-label>
+                        <input
+                        matInput [type] = "hide ? 'password' : 'text'"
+                        name="password"
+                        formControlName="confirmPassword">
+                        <button mat-icon-button matSuffix
+                            (click)="hide = !hide" 
+                            [attr.aria-label]="'Hide password'"
+                            [attr.aria-pressed]="hide">
+                            <mat-icon> {{ hide ? 'visibility_off' : 'visibility' }} </mat-icon>
+                        </button>
+                    </mat-form-field>
+
+                    <!-- correo -->
+                    <mat-form-field>
+                        <mat-label> Correo Electrónico </mat-label>
+                        <input
+                        matInput
+                        type="email"
+                        placeholder="Ej: yuri@yuri.com"
+                        formControlName="email">
+                    </mat-form-field>
+            
+                    <button
+                        mat-raised-button
+                        color="warn"
+                        type="submit"
+                        >
+                        <mat-icon>save</mat-icon>
+                        Registrar
+                    </button>
+            
+                    <div class="flex justify-content-end mt-3">
+                        <a routerLink="/login">Ya tienes cuenta?</a>
+                    </div>
+    
+                </form>    
+            </mat-card>
+        </div>
+
+    </div>
+    
+    
+
+</div>

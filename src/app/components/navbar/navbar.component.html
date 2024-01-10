@@ -1,0 +1,30 @@
+
+    <mat-toolbar color="primary">
+
+      <span>Gestion de control de tareas</span>
+      <span class="example-spacer"></span>
+
+        <button *ngIf="!isLoggedIn" routerLink="/login"
+            matTooltip="Login"
+            mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+                <mat-icon>login</mat-icon>
+        </button>
+
+        <button *ngIf="isLoggedIn" mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            <mat-icon >account_circle</mat-icon>
+        </button>
+
+        <mat-menu #menu="matMenu">
+            <button (click)="onLogout()" mat-menu-item>
+                <mat-icon>logout</mat-icon>
+                <span>Logout</span>
+            </button>
+
+            <button (click)="onDeleteUserLogged()" mat-menu-item>
+                <mat-icon>delete</mat-icon>
+                <span>Eliminar Usuario Logado</span>
+            </button>
+        </mat-menu>
+
+    </mat-toolbar>
+
